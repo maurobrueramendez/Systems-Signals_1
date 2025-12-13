@@ -1,0 +1,212 @@
+
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{IIR Filters}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+  colback=blue!3,
+  colframe=blue!40,
+  title=Theory,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{methodbox}{
+  colback=green!3,
+  colframe=green!40,
+  title=Method,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{examplebox}{
+  colback=gray!4,
+  colframe=black!35,
+  title=Example / Result,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{IIR Filters — Seminar 9 \& 10}}\\[4pt]
+{\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+\section{Discrete-Time LTI Systems}
+
+\begin{theorybox}
+A causal discrete-time LTI system is described by a linear constant-coefficient difference equation (LCCDE):
+\[
+y[n] + \sum_{k=1}^{N} a_k y[n-k]
+= \sum_{m=0}^{M} b_m x[n-m].
+\]
+Initial rest is assumed unless stated otherwise.
+\end{theorybox}
+
+\section{Z-Transform and System Function}
+
+\begin{theorybox}
+The $z$-transform of a sequence $x[n]$ is
+\[
+X(z) = \sum_{n=-\infty}^{\infty} x[n] z^{-n}.
+\]
+\end{theorybox}
+
+\begin{methodbox}
+To compute the system function $H(z)$:
+\begin{enumerate}
+\item Take the $z$-transform of the difference equation.
+\item Use $z$-shift property: $\mathcal{Z}\{x[n-k]\} = z^{-k}X(z)$.
+\item Solve for $H(z)=\dfrac{Y(z)}{X(z)}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+\[
+y[n] = a y[n-1] + x[n]
+\quad\Rightarrow\quad
+H(z)=\frac{1}{1-a z^{-1}}.
+\]
+\end{examplebox}
+
+\section{Poles, Zeros, and Stability}
+
+\begin{theorybox}
+For
+\[
+H(z)=\frac{B(z)}{A(z)},
+\]
+zeros are roots of $B(z)$ and poles are roots of $A(z)$.
+\end{theorybox}
+
+\begin{theorybox}
+A causal LTI system is BIBO stable if and only if all poles satisfy
+\[
+|p_i| < 1.
+\]
+Zeros do not affect stability.
+\end{theorybox}
+
+\section{Impulse Response and Convolution}
+
+\begin{theorybox}
+The impulse response $h[n]$ is the output of the system to $x[n]=\delta[n]$.
+\end{theorybox}
+
+\begin{methodbox}
+Any input can be decomposed as:
+\[
+x[n] = \sum_{k=-\infty}^{\infty} x[k]\delta[n-k].
+\]
+By linearity and time invariance:
+\[
+y[n] = \sum_{k=-\infty}^{\infty} x[k]h[n-k].
+\]
+\end{methodbox}
+
+\section{First-Order IIR Systems}
+
+\begin{theorybox}
+A first-order IIR system has the form:
+\[
+y[n]=a y[n-1]+b x[n].
+\]
+\end{theorybox}
+
+\begin{examplebox}
+Impulse response:
+\[
+h[n]=b a^n u[n], \qquad |a|<1.
+\]
+Step response:
+\[
+y[n]=\frac{1-a^{n+1}}{1-a}.
+\]
+\end{examplebox}
+
+\section{Second-Order Resonators}
+
+\begin{theorybox}
+Complex conjugate poles at
+\[
+z = r e^{\pm j\omega_0}
+\]
+produce damped oscillations.
+\end{theorybox}
+
+\begin{methodbox}
+The corresponding denominator polynomial is:
+\[
+A(z)=1-2r\cos(\omega_0)z^{-1}+r^2z^{-2}.
+\]
+\end{methodbox}
+
+\begin{examplebox}
+Impulse response:
+\[
+h[n]=C r^n\cos(\omega_0 n+\phi)u[n].
+\]
+\end{examplebox}
+
+\section{Delayed Feedback Systems}
+
+\begin{theorybox}
+A delayed feedback system:
+\[
+y[n]=-a y[n-K]+x[n]
+\]
+has system function
+\[
+H(z)=\frac{1}{1+a z^{-K}}.
+\]
+\end{theorybox}
+
+\begin{examplebox}
+Poles satisfy:
+\[
+z^K=-a
+\]
+and are equally spaced in angle on a circle of radius $|a|^{1/K}$.
+\end{examplebox}
+
+\section{Exam Strategy}
+
+\begin{methodbox}
+\begin{enumerate}
+\item Write the difference equation.
+\item Compute $H(z)$.
+\item Find poles and zeros.
+\item Check stability.
+\item Interpret time-domain behavior from pole locations.
+\end{enumerate}
+\end{methodbox}
+
+\end{document}

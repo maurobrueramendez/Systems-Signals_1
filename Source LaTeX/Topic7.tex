@@ -1,0 +1,290 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{marginnote}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{FIR Filters}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles (Identical to Reference) ----------
+\newtcolorbox{theorybox}{
+    colback=blue!3,
+    colframe=blue!40,
+    title=Theory,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+\newtcolorbox{methodbox}{
+    colback=green!3,
+    colframe=green!40,
+    title=Method,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+\newtcolorbox{examplebox}{
+    colback=gray!4,
+    colframe=black!35,
+    title=Example / Result,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+
+% ---------- Document ----------
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Seminar 7 — FIR Filters \& Frequency Response}}\\[4pt]
+{\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ============================================================
+\section{FIR Systems and Convolution}
+% ============================================================
+
+\begin{theorybox}
+A finite impulse response (FIR) LTI system of order $M$ is defined by:
+\[
+y[n] = \sum_{k=0}^{M} b_k x[n-k],
+\qquad
+h[n] = b_n.
+\]
+Impulse response is finite-length, causal if $h[n]=0$ for $n<0$.
+\end{theorybox}
+
+\marginnote{\footnotesize FIR = no feedback, always BIBO stable.}
+
+\begin{methodbox}
+Computing the output:
+\[
+y[n] = \sum_{k=0}^{M} b_k x[n-k].
+\]
+\begin{enumerate}
+\item Identify $b_k$ from the given expression or $H(e^{j\omega})$.
+\item Use direct convolution for time-domain signals.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+If $H(e^{j\omega}) = 1 - e^{-j\omega}$ then $h[n] = \delta[n] - \delta[n-1]$ and
+\[
+y[n] = x[n] - x[n-1].
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Frequency Response of FIR Filters}
+% ============================================================
+
+\begin{theorybox}
+The frequency response is
+\[
+H(e^{j\omega}) = \sum_{k=0}^{M} b_k e^{-j\omega k}.
+\]
+A complex exponential $e^{j\omega_0 n}$ is an eigenfunction:
+\[
+y[n] = H(e^{j\omega_0}) e^{j\omega_0 n}.
+\]
+\end{theorybox}
+
+\marginnote{\footnotesize Magnitude = gain, phase = shift.}
+
+\begin{methodbox}
+To compute $H(e^{j\omega})$:
+\begin{enumerate}
+\item Write the FIR expansion $\sum b_k e^{-j\omega k}$.
+\item Factor exponentials to express in magnitude--phase form.
+\item For cascade systems: multiply responses $H=H_1H_2H_3$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $y[n]=x[n]-\sqrt{3}\,x[n-1]+x[n-2]$,
+\[
+H(e^{j\omega}) = 1 - \sqrt{3}\,e^{-j\omega} + e^{-j2\omega}
+= e^{-j\omega}(2\cos\omega -\sqrt{3}).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Zeros of FIR Systems}
+% ============================================================
+
+\begin{theorybox}
+Zeros of $H(e^{j\omega})$ occur when the polynomial
+\[
+\sum_{k=0}^{M} b_k e^{-j\omega k} = 0.
+\]
+A sinusoid at frequency $\omega_0$ is fully cancelled if
+\[
+H(e^{j\omega_0}) = 0.
+\]
+\end{theorybox}
+
+\marginnote{\footnotesize Zeros create notches in frequency.}
+
+\begin{methodbox}
+Finding zeros:
+\begin{enumerate}
+\item Rewrite $H(e^{j\omega})$ as $e^{-jM\omega/2} P(\omega)$.
+\item Solve $P(\omega)=0$ using trigonometric identities.
+\item For cascaded systems: each factor yields its own zeros.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+If $H(e^{j\omega}) = e^{-j\omega}(2\cos\omega -\sqrt{3})$ then
+\[
+H(e^{j\omega}) = 0 \;\Longleftrightarrow\; 2\cos\omega = \sqrt{3}
+\;\Longleftrightarrow\; \omega = \pm \tfrac{\pi}{6}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Cascade of FIR Filters}
+% ============================================================
+
+\begin{theorybox}
+For FIR systems in cascade:
+\[
+H(e^{j\omega}) = \prod_{i} H_i(e^{j\omega}), \qquad
+h[n] = h_1[n] * h_2[n] * \cdots.
+\]
+\end{theorybox}
+
+\marginnote{\footnotesize Cascading adds delays, multiplies spectra.}
+
+\begin{methodbox}
+To find the equivalent difference equation:
+\begin{enumerate}
+\item Compute each $H_i(e^{j\omega})$.
+\item Multiply: $H=\prod H_i$.
+\item Expand into $\sum b_k e^{-j\omega k}$.
+\item Read off $b_k$ for the final FIR.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Cascading
+$(1-e^{-j\omega})(1-e^{-j2\omega})(1-e^{-j3\omega})$ yields
+\[
+H(e^{j\omega}) = 1 - e^{-j\omega} - e^{-j2\omega}
++ e^{-j4\omega} + e^{-j5\omega} - e^{-j6\omega}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Sinusoidal Response}
+% ============================================================
+
+\begin{theorybox}
+For input $x[n]=A e^{j(\omega_0 n+\phi)}$,
+\[
+y[n] = A |H(e^{j\omega_0})|
+e^{j(\omega_0 n+\phi+\angle H(e^{j\omega_0}))}.
+\]
+Frequency does not change; only amplitude and phase do.
+\end{theorybox}
+
+\marginnote{\footnotesize FIR acts as frequency-dependent scaling.}
+
+\begin{methodbox}
+To express output as $B\cos(\omega_0 n+\varphi)$:
+\begin{enumerate}
+\item Compute $H(e^{j\omega_0})$.
+\item Let $B = A |H(e^{j\omega_0})|$.
+\item Set $\varphi = \phi + \angle H(e^{j\omega_0}) \pm \tfrac{\pi}{2}$ depending on sine/cosine form.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+If $x[n]=\sin(\omega_0 n)$ and
+$H(e^{j\omega_0}) = e^{-j\omega_0}(2\cos\omega_0 -\sqrt{3})$,
+\[
+y[n] = (2\cos\omega_0 -\sqrt{3})
+\cos(\omega_0 n -\omega_0 - \tfrac{\pi}{2}).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Moving-Average (Rectangular) FIR Filters}
+% ============================================================
+
+\begin{theorybox}
+An $L$-point moving average:
+\[
+h[n] = \frac{1}{L} u[n] - \frac{1}{L} u[n-L],
+\qquad 
+H(e^{j\omega}) = \frac{1}{L}\sum_{k=0}^{L-1} e^{-j\omega k}.
+\]
+\end{theorybox}
+
+\marginnote{\footnotesize Prototype low-pass; linear phase.}
+
+\begin{methodbox}
+Standard simplification:
+\[
+H(e^{j\omega}) =
+\frac{1}{L}\,
+e^{-j\omega\frac{L-1}{2}}
+\frac{\sin(L\omega/2)}{\sin(\omega/2)}.
+\]
+Steps:
+\begin{enumerate}
+\item Use geometric series: $\sum e^{-j\omega k}$.
+\item Factor exponentials to isolate linear phase.
+\item Identify zeros at $\omega = \tfrac{2\pi m}{L}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Magnitude:
+\[
+|H(e^{j\omega})|
+=
+\frac{1}{L}
+\left|\frac{\sin(L\omega/2)}{\sin(\omega/2)}\right|.
+\]
+Phase:
+\[
+\angle H(e^{j\omega}) = -\frac{L-1}{2}\omega
+\quad (\text{plus sign flips at zeros}).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Exam Strategy}
+% ============================================================
+
+\begin{methodbox}
+\begin{enumerate}
+\item Identify FIR order and coefficients.
+\item Compute $H(e^{j\omega})$ in exponential form.
+\item Factor into magnitude--phase when useful.
+\item Locate zeros: solve $H(e^{j\omega_0})=0$.
+\item Evaluate system response to sinusoids via $H(e^{j\omega_0})$.
+\item For cascades: multiply responses before expanding.
+\end{enumerate}
+\end{methodbox}
+
+\end{document}

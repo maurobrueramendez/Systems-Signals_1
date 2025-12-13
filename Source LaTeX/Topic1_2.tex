@@ -1,0 +1,385 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{Sinusoids \& Exponentials}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+  colback=blue!3,
+  colframe=blue!40,
+  title=Theory,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{methodbox}{
+  colback=green!3,
+  colframe=green!40,
+  title=Method,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{examplebox}{
+  colback=gray!4,
+  colframe=black!35,
+  title=Example / Result,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+% ---------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Sinusoids \& Exponentials --- Seminar 1 \& 2}}\\[4pt]
+  {\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ============================================================
+\section{Continuous-Time Sinusoids}
+
+\begin{theorybox}
+A real sinusoid is defined as
+\[
+x(t) = A\cos(\omega_0 t + \varphi),
+\]
+with:
+\[
+A>0 \ (\text{amplitude}), \quad 
+\omega_0>0 \ (\text{angular frequency [rad/s]}), \quad
+t \in \mathbb{R}, \quad 
+\varphi \in [0,2\pi).
+\]
+Fundamental period:
+\[
+T_0 = \frac{2\pi}{\omega_0}, \qquad
+x(t+T_0)=x(t).
+\]
+Range:
+\[
+-A \le x(t) \le A.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: amplitude sets vertical scale; $\omega_0$ sets speed; $\varphi$ shifts horizontally.}
+
+\begin{methodbox}
+To determine sinusoid parameters from a plot:
+\begin{enumerate}
+  \item Amplitude $A$: half the peak-to-peak value.
+  \item Period $T_0$: distance between successive peaks.
+  \item Angular frequency: $\omega_0 = 2\pi/T_0$.
+  \item Phase $\varphi$: solve $x(0)=A\cos(\varphi)$ or use time shift of max.
+  \item Time shift relation:
+  \[
+  \cos(\omega_0 t + \varphi)=\cos(\omega_0(t-t_1)) \Rightarrow \varphi = -\omega_0 t_1.
+  \]
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From the sinusoid in Seminar 1 (Solutions p.2):
+\[
+A=9, \quad \omega_0 = 2\pi\frac{20}{9}, \quad \varphi = -2\pi\frac{1}{9}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Sketching Sinusoids and Phase Shifts}
+
+\begin{theorybox}
+A horizontal shift of $x(t)=A\cos(\omega_0 t + \varphi)$ corresponds to
+\[
+x(t)=A\cos(\omega_0 (t-t_1)), \qquad \varphi = -\omega_0 t_1.
+\]
+Positive $t_1$ shifts the waveform right; negative shifts it left.
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: cosine achieves its max when argument $=0$ modulo $2\pi$.}
+
+\begin{methodbox}
+To plot shifted cosines:
+\begin{enumerate}
+  \item Identify base period $T_0 = 1/f_0$ or $2\pi/\omega_0$.
+  \item Compute shift $t_1 = -\varphi/\omega_0$.
+  \item Translate the standard cosine plot by $t_1$.
+  \item Mark maxima at $t=t_1+kT_0$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 1: For $\omega_0=\pi/5$ and $\varphi=-\pi/3$,
+\[
+t_1 = -\frac{-\pi/3}{\pi/5} = \frac{5}{3}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Euler Representation and Phasors}
+
+\begin{theorybox}
+Euler identities:
+\[
+e^{j\theta} = \cos\theta + j\sin\theta,\qquad
+\cos\theta = \frac{e^{j\theta}+e^{-j\theta}}{2},\qquad
+\sin\theta = \frac{e^{j\theta}-e^{-j\theta}}{2j}.
+\]
+A phasor is the complex constant
+\[
+X = A e^{j\varphi}, \qquad x(t)=\Re\{X e^{j\omega_0 t}\}.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: sinusoid = rotating phasor projected onto real axis.}
+
+\begin{methodbox}
+Sum of sinusoids of same frequency:
+\begin{enumerate}
+  \item Convert each into phasor $X_k=A_k e^{j\varphi_k}$.
+  \item Add phasors algebraically: $X=\sum_k X_k$.
+  \item Resulting sinusoid:
+  \[
+  x(t)=|X|\cos(\omega_0 t + \arg X).
+  \]
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 2, Ex. 9:
+\[
+2\cos(200\pi t+\tfrac{\pi}{3}) + 2\cos(200\pi t-\tfrac{3\pi}{4})
+\]
+Phasors:
+\[
+X_1 = 2 e^{j\pi/3},\quad X_2 = 2 e^{-j3\pi/4},\quad 
+X=X_1+X_2=5.536\, e^{j0.2747}.
+\]
+Thus,
+\[
+x(t)=5.536\cos(200\pi t+0.2747).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Trigonometric Identities from Euler}
+
+\begin{theorybox}
+Using Euler,
+\[
+\cos(\theta_1 \pm \theta_2)
+= \cos\theta_1\cos\theta_2 \mp \sin\theta_1\sin\theta_2.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: product of phasors encodes angle sums.}
+
+\begin{methodbox}
+Procedure:
+\begin{enumerate}
+  \item Replace cosines/sines using Euler expressions.
+  \item Multiply exponentials: $e^{j\theta_1}e^{j\theta_2}=e^{j(\theta_1+\theta_2)}$.
+  \item Collect terms and recover cosine/sine via inverse Euler.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 2, Ex. 4:
+\[
+\cos(\theta_1+\theta_2)=\frac{e^{j\theta_1}+e^{-j\theta_1}}{2}
+\cdot
+\frac{e^{j\theta_2}+e^{-j\theta_2}}{2} \Rightarrow \cos\theta_1\cos\theta_2-\sin\theta_1\sin\theta_2.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Time Shift and Maximum Location}
+
+\begin{theorybox}
+For $x(t)=A\cos(\omega_0 t+\varphi)$, the maxima occur at
+\[
+\omega_0 t + \varphi = 2\pi k,\qquad t = \frac{-\varphi}{\omega_0} + kT_0.
+\]
+\end{theorybox}
+
+\begin{methodbox}
+To check maximum at time $t_1$:
+\begin{enumerate}
+  \item Set $t=t_1$ and check whether $\omega_0 t_1+\varphi \equiv 0 \pmod{2\pi}$.
+  \item If yes, $x(t_1)=A$ is a maximum.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 2, Ex. 5:
+\[
+x(t)=A\sin(11\pi t)=A\cos(11\pi t - \tfrac{\pi}{2}).
+\]
+Thus $t_1 = \frac{1}{22}$ gives $\omega_0 t_1 - \pi/2 = 0$.
+\end{examplebox}
+
+% ============================================================
+\section{Scaling and Shifting a Sinusoid}
+
+\begin{theorybox}
+If
+\[
+y(t)=Gx(t-t_1),
+\]
+and $x(t)=A\cos(\omega_0 t+\varphi)$, then
+\[
+y(t)=GA\cos(\omega_0 t+\varphi - \omega_0 t_1).
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: time shift modifies phase; scaling modifies amplitude.}
+
+\begin{methodbox}
+To match $y(t)=B\cos(\omega_0 t)$:
+\begin{enumerate}
+  \item Set $GA=B$ for amplitude.
+  \item Solve $\varphi-\omega_0 t_1=0$ for $t_1$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 2, Ex. 6:
+\[
+x(t)=20\cos(80\pi t -0.4\pi).
+\]
+We want $y(t)=5\cos(80\pi t)$.
+\[
+G=\frac{5}{20}=\frac14,\qquad 
+t_1=\frac{-(-0.4\pi)}{80\pi}=-\frac{1}{200}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Phasor Sum Identity}
+
+\begin{theorybox}
+For $X_1=e^{j\alpha}$ and $X_2=e^{j\beta}$,
+\[
+X_3=X_1+X_2 = 2\cos\left(\frac{\alpha-\beta}{2}\right)\,
+e^{j(\alpha+\beta)/2}.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: sum of two unit phasors is determined by midpoint angle and half-angle difference.}
+
+\begin{examplebox}
+Seminar 2, Ex. 7:
+Plotting $X_1, X_2$, their vector sum has magnitude $2\cos((\alpha-\beta)/2)$ and angle $(\alpha+\beta)/2$.
+\end{examplebox}
+
+% ============================================================
+\section{Discrete-Time Complex Exponentials}
+
+\begin{theorybox}
+A discrete complex exponential:
+\[
+x[n] = X z_0^n,
+\]
+with phasor $X=Ae^{j\varphi}$ and $z_0=re^{j\omega_0}$, is a discrete sinusoid when $r=1$.
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: repeated rotation/scaling in the complex plane.}
+
+\begin{methodbox}
+First difference:
+\[
+y[n]=x[n]-x[n-1]
+\]
+has form $Ae^{j(\omega_0 n + \phi)}$ when
+\[
+A = |1-z_0^{-1}||X|,\quad \phi = \arg(X(1-z_0^{-1})).
+\]
+\end{methodbox}
+
+\begin{examplebox}
+Seminar 2, Ex. 8:
+\[
+x[n]=e^{j(0.4\pi n - 0.5\pi)},\quad 
+y[n]=x[n]-x[n-1]=A e^{j(\omega_0 n+\phi)}.
+\]
+Computed:
+\[
+A=1.37,\qquad \phi=-0.81,\qquad \omega_0=0.4\pi.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Complex-Valued $z(t)$ for Real $x(t)$}
+
+\begin{theorybox}
+Any real sinusoid can be expressed as
+\[
+x(t)=\Re\{z(t)\}, \qquad
+z(t)=X e^{j\omega_0 t}.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: real part picks out projection of rotating phasor.}
+
+\begin{examplebox}
+Seminar 2, Ex. 10:
+\[
+x(t)=20\cos(300\pi t+\tfrac{\pi}{4})
++\!5\sqrt{2}\cos(300\pi t-\pi)
++\!5\sqrt{2}\cos(300\pi t-\tfrac{\pi}{2}).
+\]
+Phasor sum:
+\[
+X = 10 e^{j\pi/4},
+\quad z(t)=X e^{j300\pi t},
+\quad x(t)=10\cos(300\pi t+\tfrac{\pi}{4}).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Exam Strategy for Sinusoid Problems}
+
+\begin{methodbox}
+\begin{enumerate}
+  \item Identify amplitude, period, frequency, and phase directly from plots or formulas.
+  \item Convert between cosine and sine using phase shifts.
+  \item For sums of sinusoids at same $\omega_0$:
+  \begin{itemize}
+    \item Rewrite each as a phasor.
+    \item Add complex phasors.
+    \item Convert back to single cosine.
+  \end{itemize}
+  \item For discrete exponentials:
+  \begin{itemize}
+    \item Identify $z_0$ and $X$.
+    \item For differences, compute $1 - z_0^{-1}$.
+    \item Extract amplitude and phase from magnitude and angle.
+  \end{itemize}
+  \item Always track angles in radians unless otherwise stated.
+\end{enumerate}
+\end{methodbox}
+
+\end{document}

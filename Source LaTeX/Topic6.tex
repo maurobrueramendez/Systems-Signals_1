@@ -1,0 +1,283 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{marginnote}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{FIR Filters}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+    colback=blue!3,
+    colframe=blue!40,
+    title=Theory,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+
+\newtcolorbox{methodbox}{
+    colback=green!3,
+    colframe=green!40,
+    title=Method,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+
+\newtcolorbox{examplebox}{
+    colback=gray!4,
+    colframe=black!35,
+    title=Example / Result,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{FIR Filters — Seminar 6}}\\[4pt]
+{\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ============================================================
+\section{FIR Systems and Impulse Responses}
+
+\begin{theorybox}
+A finite-impulse-response (FIR) discrete-time LTI system is defined by
+\[
+y[n] = \sum_{k=0}^{M} b_k\,x[n-k].
+\]
+The impulse response has \emph{finite} duration:
+\[
+h[n] = 0 \quad \text{for } n \notin \{0,\dots,M\}.
+\]
+Initial rest is assumed.
+\marginnote{\footnotesize FIR = no feedback; response ends after $M$ samples.}
+\end{theorybox}
+
+\begin{examplebox}
+For
+\[
+h[n] = \delta[n-1] - 2\delta[n-4],
+\]
+the difference equation is
+\[
+y[n] = x[n-1] - 2x[n-4].
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Impulse Response Construction}
+
+\begin{theorybox}
+The impulse response is the output when
+\[
+x[n] = \delta[n].
+\]
+A shifted delta produces delayed samples:
+\[
+\delta[n-k] \Rightarrow h[k].
+\]
+\marginnote{\footnotesize Each delta term reveals one tap.}
+\end{theorybox}
+
+\begin{methodbox}
+To obtain $h[n]$ from a difference equation:
+\begin{enumerate}
+\item Set $x[n]=\delta[n]$.
+\item Substitute into $y[n] = \sum b_k x[n-k]$.
+\item Read off nonzero samples at $n=k$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For
+\[
+y[n]=x[n] + 2x[n-2] - 4.5x[n-3] + 5x[n-5],
+\]
+the impulse response is
+\[
+h[n]=\delta[n]+2\delta[n-2]-4.5\delta[n-3]+5\delta[n-5].
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Convolution Representation}
+
+\begin{theorybox}
+Any input can be decomposed as
+\[
+x[n] = \sum_{k=-\infty}^{\infty} x[k]\delta[n-k].
+\]
+By linearity \& time invariance:
+\[
+y[n] = \sum_{k=-\infty}^{\infty} x[k]\,h[n-k].
+\]
+\marginnote{\footnotesize Output = weighted, shifted copies of $h[n]$.}
+\end{theorybox}
+
+\begin{methodbox}
+Convolution with FIR:
+\begin{enumerate}
+\item Identify nonzero $h[k]$.
+\item For each $k$, form $x[n-k]$.
+\item Multiply by $h[k]$ and sum.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Two-tap FIR:
+\[
+h[n]=\delta[n]-2\delta[n-3].
+\]
+Output:
+\[
+y[n]=x[n]-2x[n-3].
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Block Diagrams of FIR Filters}
+
+\begin{theorybox}
+An $M$-tap FIR filter uses:
+\[
+M \text{ delays}, \quad M+1 \text{ multipliers}, \quad \text{adders}.
+\]
+A $k$-sample delay implements $x[n-k]$.
+\marginnote{\footnotesize Each tap corresponds to one coefficient $b_k$.}
+\end{theorybox}
+
+\begin{methodbox}
+To draw the structure:
+\begin{enumerate}
+\item Create delay chain: $x[n] \rightarrow z^{-1} \rightarrow z^{-1} \dots$.
+\item Tap outputs at $x[n-k]$.
+\item Multiply each tap by $b_k$.
+\item Sum all branches into $y[n]$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For coefficients $(1,0,2,-4.5,0,5)$:
+Delays produce $x[n], x[n-1],\dots,x[n-5]$; taps at $k=0,2,3,5$.
+\end{examplebox}
+
+% ============================================================
+\section{Frequency Response of FIR Filters}
+
+\begin{theorybox}
+For an FIR filter,
+\[
+H(e^{j\omega}) = \sum_{k=0}^{M} b_k e^{-j\omega k}.
+\]
+Complex exponentials are eigenfunctions:
+\[
+x[n] = C e^{j\omega n} \Rightarrow y[n] = H(e^{j\omega})\,C e^{j\omega n}.
+\]
+\marginnote{\footnotesize Filter acts as gain \& phase shift at frequency $\omega$.}
+\end{theorybox}
+
+\begin{methodbox}
+To compute $y[n]$ for $x[n]=C e^{j\omega n}$:
+\begin{enumerate}
+\item Evaluate $H(e^{j\omega}) = \sum b_k e^{-j\omega k}$.
+\item Multiply amplitude: $A = |H|\,|C|$.
+\item Add phase: $\varphi = \arg(C)+\arg(H)$.
+\item Output: $y[n] = A e^{j(\omega n + \varphi)}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Given
+\[
+y[n]=2x[n]+4x[n-1]+2x[n-2],
+\quad x[n]=11e^{j(0.3\pi n+0.5\pi)},
+\]
+\[
+H(e^{j0.3\pi}) = 2 + 4e^{-j0.3\pi} + 2e^{-j0.6\pi},
+\]
+\[
+y[n] = H(e^{j0.3\pi})\, 11 e^{j(0.3\pi n + 0.5\pi)}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Sinusoids Through FIR Filters}
+
+\begin{theorybox}
+A cosine can be written as:
+\[
+A\cos(\omega n + \phi)
+= \Re\{A e^{j(\omega n + \phi)}\}.
+\]
+FIR filters preserve frequency; amplitude and phase are modified by $H(e^{j\omega})$.
+\end{theorybox}
+
+\begin{methodbox}
+To obtain output for a cosine input:
+\begin{enumerate}
+\item Convert to complex exponential.
+\item Multiply by $H(e^{j\omega})$.
+\item Convert back to cosine using real part.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Input:
+\[
+x[n]=A\cos(\omega n+\phi).
+\]
+Output:
+\[
+y[n]=|H(e^{j\omega})|A
+\cos\!\big(\omega n+\phi+\arg H(e^{j\omega})\big).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Time Shifts and Scaling}
+
+\begin{theorybox}
+Time shift:
+\[
+x[n-n_0] \Rightarrow y[n-n_0].
+\]
+Scaling:
+\[
+\alpha x[n] \Rightarrow \alpha y[n].
+\]
+\marginnote{\footnotesize LTI property used repeatedly in FIR exercises.}
+\end{theorybox}
+
+\begin{examplebox}
+If $y_1[n]$ is output for $x_1[n]$, then
+\[
+x_2[n] = \alpha x_1[n-n_0]
+\Rightarrow
+y_2[n] = \alpha y_1[n-n_0].
+\]
+\end{examplebox}
+
+% ============================================================
+\end{document}

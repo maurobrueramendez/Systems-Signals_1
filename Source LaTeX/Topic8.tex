@@ -1,0 +1,327 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{Z-Transform (Seminar 8)}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+  colback=blue!3,
+  colframe=blue!40,
+  title=Theory,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{methodbox}{
+  colback=green!3,
+  colframe=green!40,
+  title=Method,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{examplebox}{
+  colback=gray!4,
+  colframe=black!35,
+  title=Example / Result,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Z-Transform — Seminar 8}}\\[4pt]
+{\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ==========================================================
+\section{Z-Transform \& ROC}
+% ==========================================================
+
+\begin{theorybox}
+Bilateral $z$-transform:
+\[
+X(z)=\sum_{n=-\infty}^{\infty} x[n]z^{-n}.
+\]
+ROC is a ring in the $z$-plane; it cannot include poles.\\
+Unit circle must lie in ROC to define $H(e^{j\omega})$.
+\end{theorybox}
+
+\marginpar{\scriptsize ROC decides if frequency response exists}
+
+\begin{examplebox}
+Key pairs used in Seminar 8:
+\[
+\delta[n] \leftrightarrow 1,\qquad
+a^n u[n] \leftrightarrow \frac{1}{1-az^{-1}},\ |z|>|a|.
+\]
+\end{examplebox}
+
+% ==========================================================
+\section{FIR System Functions}
+% ==========================================================
+
+\begin{theorybox}
+FIR systems:
+\[
+H(z)=\sum_{k=0}^{M} h[k]z^{-k}
+\quad\Longleftrightarrow\quad
+y[n]=\sum_{k=0}^{M} h[k]x[n-k].
+\]
+All poles located at $z=0$ (multiplicity $M$). No stability concerns.
+\end{theorybox}
+
+\begin{methodbox}
+To compute $H(z)$:
+\begin{enumerate}
+\item Write $h[n]$ explicitly (from difference form or exercise).
+\item Apply $z$-transform using shifts $z^{-k}$.
+\item Simplify into polynomial in $z^{-1}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+Three-point moving average:
+\[
+h[n]=\tfrac13(\delta[n]+\delta[n-1]+\delta[n-2]),
+\quad
+H(z)=\tfrac13(1+z^{-1}+z^{-2}).
+\]
+\end{examplebox}
+
+% ==========================================================
+\section{Factorization \& Conjugate-Pair Expansion}
+% ==========================================================
+
+\begin{theorybox}
+A factor $(1-a z^{-1})$ gives a zero at $z=a$.\\
+Conjugate pair:
+\[
+(1-az^{-1})(1-a^*z^{-1})
+=1-(a+a^*)z^{-1}+|a|^2 z^{-2}.
+\]
+\[
+a=re^{j\theta}\Rightarrow a+a^*=2r\cos\theta.
+\]
+\end{theorybox}
+
+\marginpar{\scriptsize Used in Exercises 2, 5}
+
+\begin{methodbox}
+Factor all terms as $(1-cz^{-1})$ or $(1\pm z^{-2})$ to identify:
+\begin{itemize}
+\item unit-circle zeros (nulls), 
+\item radial zeros ($r<1$),
+\item multiplicities.
+\end{itemize}
+\end{methodbox}
+
+\begin{examplebox}
+\[
+(1-0.9e^{j\pi/3}z^{-1})(1-0.9e^{-j\pi/3}z^{-1})
+=1-0.9z^{-1}+0.81z^{-2}.
+\]
+\end{examplebox}
+
+% ==========================================================
+\section{Frequency Response $H(e^{j\omega})$}
+% ==========================================================
+
+\begin{theorybox}
+Evaluate on unit circle:
+\[
+H(e^{j\omega})=H(z)\big|_{z=e^{j\omega}}.
+\]
+If $H(e^{j\omega_0})=0$, the system cancels a sinusoid of frequency $\omega_0$.
+\end{theorybox}
+
+\begin{methodbox}
+To compute $H(e^{j\omega})$:
+\begin{enumerate}
+\item Substitute $z=e^{j\omega}$, $z^{-1}=e^{-j\omega}$.
+\item Factor out $e^{-j\alpha\omega}$ if needed.
+\item Reduce expressions with $e^{j\theta}\pm e^{-j\theta}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $H(z)=1-z^{-4}$:
+\[
+H(e^{j\omega})=1-e^{-j4\omega}
+=2j\sin(2\omega)e^{-j2\omega}.
+\]
+Magnitude:
+\[
+|H(e^{j\omega})|=2|\sin(2\omega)|.
+\]
+Nulls at $\omega=\frac{k\pi}{2}$.
+\end{examplebox}
+
+% ==========================================================
+\section{Sinusoidal Steady-State Response}
+% ==========================================================
+
+\begin{theorybox}
+Input:
+\[
+x[n]=A\cos(\omega_0 n+\phi).
+\]
+Output of an LTI system:
+\[
+y[n]=A|H(e^{j\omega_0})|
+\cos(\omega_0 n+\phi+\angle H(e^{j\omega_0})).
+\]
+\end{theorybox}
+
+\marginpar{\scriptsize Amplitude + phase set by $H(e^{j\omega_0})$}
+
+\begin{examplebox}
+If $H(e^{j\pi/2})=0$, all components at $\omega=\pi/2$ vanish.
+\end{examplebox}
+
+% ==========================================================
+\section{Impulse Response Patterns in Seminar 8}
+% ==========================================================
+
+\begin{theorybox}
+Impulse response is obtained by inverse $z$-transform:
+\[
+H(z)=\sum h[k]z^{-k}
+\quad\Longrightarrow\quad
+h[n]=\sum h[k]\delta[n-k].
+\]
+FIR structures yield finite support.
+\end{theorybox}
+
+\begin{examplebox}
+\[
+H(z)=1 - z^{-4}
+\quad\Rightarrow\quad
+h[n]=\delta[n]-\delta[n-4].
+\]
+\end{examplebox}
+
+\begin{examplebox}
+\[
+H(z)=\tfrac13(1+z^{-1}+z^{-2})
+\Rightarrow
+h[n]=\tfrac13(\delta[n]+\delta[n-1]+\delta[n-2]).
+\]
+\end{examplebox}
+
+% ==========================================================
+\section{Cascade Decomposition (H = H\_1H\_2)}
+% ==========================================================
+
+\begin{theorybox}
+If $H(z)=H_1(z)H_2(z)$,
+\[
+x[n]\xrightarrow{H_1} w[n]\xrightarrow{H_2} y[n].
+\]
+Choice of $H_1$ can simplify intermediate signals.
+\end{theorybox}
+
+\marginpar{\scriptsize Used in Exercise 5}
+
+\begin{methodbox}
+\begin{enumerate}
+\item Choose $H_1(z)$ producing a simple time-domain operation\\
+(e.g.\ $1-z^{-4}$ gives $w[n]=x[n]-x[n-4]$).
+\item Let $H_2(z)=H(z)/H_1(z)$.
+\item Expand $H_2(z)$ into FIR form to write $y[n]$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+If
+\[
+H(z)=(1-z^{-4})(1-0.8e^{j\pi/4}z^{-1})(1-0.8e^{-j\pi/4}z^{-1}),
+\]
+choose
+\[
+H_1(z)=1-z^{-4},
+\quad w[n]=x[n]-x[n-4].
+\]
+Then
+\[
+H_2(z)=1-0.8\sqrt{2}\,z^{-1}+0.64 z^{-2}.
+\]
+Thus
+\[
+y[n]=w[n]-0.8\sqrt{2}\,w[n-1]+0.64 w[n-2].
+\]
+\end{examplebox}
+
+% ==========================================================
+\section{Standard FIR Examples Used in Seminar 8}
+% ==========================================================
+
+\begin{examplebox}
+Three-point average:
+\[
+H(z)=\tfrac13(1+z^{-1}+z^{-2}),
+\quad
+|H(e^{j\omega})|=\tfrac{|1+2\cos\omega|}{3}.
+\]
+\end{examplebox}
+
+\begin{examplebox}
+Two-point difference:
+\[
+H(z)=1-z^{-1},
+\quad
+|H(e^{j\omega})|=2|\sin(\omega/2)|.
+\]
+\end{examplebox}
+
+\begin{examplebox}
+Four-sample difference:
+\[
+H(z)=1-z^{-4},
+\quad
+|H(e^{j\omega})|=2|\sin(2\omega)|.
+\]
+
+\end{examplebox}
+
+% ==========================================================
+\section{Exam Strategy (Seminar 8)}
+% ==========================================================
+
+\begin{methodbox}
+\begin{enumerate}
+\item Factor $H(z)$ fully; identify all zeros and their angles.
+\item Check if unit circle is in ROC before evaluating $H(e^{j\omega})$.
+\item For sinusoidal inputs, evaluate $H(e^{j\omega_0})$.
+\item Detect nulling frequencies via unit-circle zeros.
+\item For cascades, pick $H_1(z)$ producing simple shifts.
+\item Express final outputs in exact sinusoidal/frequency form.
+\end{enumerate}
+\end{methodbox}
+
+\end{document}

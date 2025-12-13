@@ -1,0 +1,282 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{Sampling — Seminar 5}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+    colback=blue!3,
+    colframe=blue!40,
+    title=Theory,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+\newtcolorbox{methodbox}{
+    colback=green!3,
+    colframe=green!40,
+    title=Method,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+\newtcolorbox{examplebox}{
+    colback=gray!4,
+    colframe=black!35,
+    title=Example / Result,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Sampling — Seminar 5}}\\[4pt]
+{\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ============================================================
+\section{Sampling Operator and Invertibility}
+
+\begin{theorybox}
+Sampling operator: $x[n] = x(nT_s)$ with $f_s = 1/T_s$.  
+Invertibility requires a bandlimited signal with spectral support  
+$|f| \le f_{\max}$.  
+Nyquist–Shannon condition:  
+\[
+f_s > 2 f_{\max}.
+\]
+If $f_s < 2 f_{\max}$, different continuous signals may yield the same $x[n]$.
+\end{theorybox}
+
+\begin{methodbox}
+To determine invertibility:
+\begin{enumerate}
+    \item Identify highest spectral component $f_{\max}$.
+    \item Check Nyquist: $f_s > 2 f_{\max}$.
+    \item If violated, enumerate aliases $f = \pm f_0 + m f_s$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $x(t)=4+4\cos(1000\pi t)\sin(50000\pi t)$, expansion gives  
+frequencies $\{24.5,25.5\}\,\text{kHz}$ $\Rightarrow f_{\max}=25.5\,$kHz.  
+Nyquist: $f_s > 51$ kHz.
+\end{examplebox}
+
+\emph{Intuition: two samples per period prevent ambiguity between oscillations.}
+
+% ============================================================
+\section{Spectral Expansion of Products}
+
+\begin{theorybox}
+Trig identity used repeatedly:
+\[
+\sin(a)\cos(b)=\frac{\sin(a+b)+\sin(a-b)}{2}.
+\]
+Frequencies extracted from $\cos(\omega t)$ and $\sin(\omega t)$ via  
+$f=\omega/(2\pi)$.
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Convert products into sum of sinusoids.
+    \item Read frequencies directly from $\omega$.
+    \item Determine $f_{\max}$ from resulting components.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+$\cos(50\pi t)\sin(700\pi t)=\tfrac12[\sin(750\pi t)+\sin(650\pi t)]$  
+$\Rightarrow f=\{375,325\}$ Hz.
+\end{examplebox}
+
+\emph{Intuition: product signals create sum/difference frequencies.}
+
+% ============================================================
+\section{Aliasing and Equivalence Classes}
+
+\begin{theorybox}
+Two continuous signals produce the same samples iff their frequencies satisfy
+\[
+f' = \pm f_0 + m f_s,\qquad m\in\mathbb{Z}.
+\]
+The discrete-time normalized frequency is  
+\[
+\Omega = 2\pi \frac{f}{f_s}.
+\]
+Aliasing occurs when different $f$ map to identical $\Omega$.
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Compute base continuous frequency from $\Omega$: $f_0 = \Omega f_s / (2\pi)$.
+    \item Enumerate aliases: $f = \pm f_0 + m f_s$.
+    \item Retain those $|f|< f_s$ or within problem constraints.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $x[n]=100\cos(0.4\pi n+\pi/4)$ with $f_s=5$ kHz:  
+$f_0=(0.4\pi)/(2\pi)\cdot 5000=1000$ Hz.  
+Aliases $<5$ kHz: $f_1=1000$ Hz, $f_2=4000$ Hz.
+\end{examplebox}
+
+\emph{Intuition: discrete-time frequencies ``wrap'' modulo $2\pi$.}
+
+% ============================================================
+\section{Continuous-to-Discrete Frequency Mapping}
+
+\begin{theorybox}
+Sampling transforms $\cos(2\pi f t+\phi)$ into  
+\[
+x[n]=\cos(2\pi f nT_s+\phi)=\cos(\Omega n+\phi),\qquad 
+\Omega = 2\pi \frac{f}{f_s}.
+\]
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Replace $t$ by $nT_s$.
+    \item Convert $2\pi f T_s$ to normalized $\Omega$.
+    \item Reduce $\Omega$ modulo $2\pi$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+$x(t)=10+18\cos(140\pi t-\tfrac{2\pi}{3})$ sampled at $f_s=400$:  
+\[
+\Omega = 140\pi T_s = \frac{140\pi}{400}=0.35\pi.
+\]
+Thus $x[n]=10+18\cos(0.35\pi n - \tfrac{2\pi}{3})$.
+\end{examplebox}
+
+% ============================================================
+\section{Minimum Sampling Rate}
+
+\begin{theorybox}
+Sampling without aliasing requires
+\[
+f_s > 2 f_{\max}.
+\]
+This ensures unique reconstruction and avoids overlapping shifted spectra.
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Compute all sinusoidal frequencies of $x(t)$.
+    \item Identify $f_{\max}$.
+    \item Apply Nyquist inequality.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $x(t)=\tfrac12[\sin(750\pi t)+\sin(650\pi t)]$:  
+$f_{\max}=375$ Hz $\Rightarrow f_s>750$ Hz.
+\end{examplebox}
+
+\emph{Intuition: prevents spectral replicas from touching.}
+
+% ============================================================
+\section{Reconstruction from Spectral Lines}
+
+\begin{theorybox}
+Given spectral pairs  
+$(A_k,f_k,\phi_k)$, the signal is  
+\[
+x(t)=\sum_k A_k \cos(2\pi f_k t+\phi_k).
+\]
+Hermitian symmetry ensures real-valuedness.
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Read amplitude/phase from spectrum.  
+    \item Convert angular frequencies $\omega_k$ to $f_k$.  
+    \item Sum all cosine components.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From spectral points in Ex.~4:  
+\[
+x(t)=10+18\cos(140\pi t-\tfrac{2\pi}{3})+
+10\cos(350\pi t+\tfrac{\pi}{2}).
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Chirp Signals and Instantaneous Frequency}
+
+\begin{theorybox}
+For a phase $\theta(t)$, instantaneous frequency is
+\[
+f(t)=\frac{1}{2\pi}\frac{d\theta(t)}{dt}.
+\]
+Sampling constraints force $f(t)\le f_s/2$ (folding).
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Replace $n$ by $t f_s$ when converting $x[n]$ to $x(t)$.  
+    \item Differentiate $\theta(t)$ to obtain $f(t)$.  
+    \item Clip at Nyquist if required.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For $\theta[n]=\pi10^{-4}n^2$ and $f_s=4$ kHz:  
+$x(t)=\cos(1600\pi t^2)$,  
+\[
+f(t)=1600t.
+\]
+Folded spectrum limits $f(t)\le2000$ Hz.
+\end{examplebox}
+
+\emph{Intuition: chirps sweep frequency continuously; sampling restricts usable range.}
+
+% ============================================================
+\section{Phasor Interpretation}
+
+\begin{theorybox}
+Phasor: $z[n]=e^{j\theta[n]}$.  
+If $\theta[n]=\Omega n+\phi$, rotation is uniform with period $N=2\pi/\Omega$.  
+Nonlinear $\theta[n]$ yields non-periodic rotation (chirp phasor).
+\end{theorybox}
+
+\begin{methodbox}
+\begin{enumerate}
+    \item Compute angle $\theta[n]$.  
+    \item Plot $e^{j\theta[n]}$ on unit circle.  
+    \item Identify periodicity from $\theta[n+N]-\theta[n]=2\pi$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+$z[n]=e^{j(0.08\pi n-0.25\pi)}$ has period $25$.  
+Chirp $c[n]=e^{j0.1\pi n^2}$ is non-periodic.
+\end{examplebox}
+
+\end{document}

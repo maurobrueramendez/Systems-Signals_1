@@ -1,0 +1,451 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ---------- Page Style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Signals \& Systems I}
+\rhead{Spectral Representation}
+\cfoot{\thepage}
+
+% ---------- Section Style ----------
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[itemize]{noitemsep, topsep=2pt}
+\setlist[enumerate]{noitemsep, topsep=2pt}
+
+% ---------- Box Styles ----------
+\newtcolorbox{theorybox}{
+  colback=blue!3,
+  colframe=blue!40,
+  title=Theory,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{methodbox}{
+  colback=green!3,
+  colframe=green!40,
+  title=Method,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\newtcolorbox{examplebox}{
+  colback=gray!4,
+  colframe=black!35,
+  title=Example / Result,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt
+}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Spectral Representation --- Seminar 3 \& 4}}\\[4pt]
+  {\large Professor-Style Theory Summary \& Cheat Sheet}
+\end{center}
+
+% ============================================================
+\section{Complex Exponentials and Euler Identities}
+
+\begin{theorybox}
+A complex exponential in continuous time:
+\[
+e^{j\omega t} = \cos(\omega t) + j\sin(\omega t).
+\]
+
+Euler identities:
+\[
+\cos(\omega t + \varphi) = \frac{e^{j(\omega t + \varphi)} + e^{-j(\omega t + \varphi)}}{2},
+\qquad
+\sin(\omega t + \varphi) = \frac{e^{j(\omega t + \varphi)} - e^{-j(\omega t + \varphi)}}{2j}.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: cos/sin are built from a positive and negative rotating phasor.}
+
+\begin{methodbox}
+Rewrite a real sinusoid as sum of complex exponentials:
+\begin{enumerate}
+  \item Start from $x(t)=A\cos(\omega t + \varphi)$ or $A\sin(\omega t + \varphi)$.
+  \item Apply Euler:
+  \[
+  A\cos(\omega t + \varphi) = \frac{A}{2}e^{j(\omega t + \varphi)} + \frac{A}{2}e^{-j(\omega t + \varphi)}.
+  \]
+  \item Identify:
+  \[
+  X(+\omega) = \frac{A}{2}e^{j\varphi}, \quad
+  X(-\omega) = \frac{A}{2}e^{-j\varphi}.
+  \]
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For
+\[
+x(t) = 10\cos(800\pi t + \tfrac{\pi}{4}),
+\]
+we get:
+\[
+x(t)
+= 5e^{j\pi/4}e^{j800\pi t} + 5e^{-j\pi/4}e^{-j800\pi t}.
+\]
+Complex amplitudes:
+\[
+X(800\pi) = 5e^{j\pi/4}, \quad X(-800\pi) = 5e^{-j\pi/4}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Sinusoids and Two-Sided Line Spectra}
+
+\begin{theorybox}
+A real sinusoid $A\cos(\omega t+\varphi)$ has a two-sided discrete spectrum with lines at $\omega=\pm\omega_0$:
+\[
+X(\omega) = \frac{A}{2}e^{j\varphi}\,\delta(\omega - \omega_0)
++ \frac{A}{2}e^{-j\varphi}\,\delta(\omega + \omega_0).
+\]
+Magnitude: $|X(\pm\omega_0)| = A/2$. Phase: $\angle X(+\omega_0) = \varphi$, $\angle X(-\omega_0) = -\varphi$.
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: each cosine $\Rightarrow$ two symmetric spectral lines.}
+
+\begin{methodbox}
+Given $x(t)$ as sum of cosines:
+\[
+x(t) = \sum_i A_i\cos(\omega_i t + \varphi_i),
+\]
+to draw its spectrum:
+\begin{enumerate}
+  \item For each term, compute $\omega_i$ and $A_i/2$.
+  \item Plot impulses in $|X(\omega)|$ at $\omega = \pm \omega_i$ with height $A_i/2$.
+  \item Plot phases in $\angle X(\omega)$: $\varphi_i$ at $+\omega_i$, $-\varphi_i$ at $-\omega_i$.
+  \item DC term $A_{\text{DC}}$ appears as a single line at $\omega = 0$ with amplitude $A_{\text{DC}}$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+For
+\[
+x(t) = 10\cos(800\pi t+\tfrac{\pi}{4})
++ 7\cos(1200\pi t - \tfrac{\pi}{3})
+- 3\cos(1600\pi t),
+\]
+angular frequencies:
+\[
+\omega_1 = 800\pi, \quad \omega_2 = 1200\pi, \quad \omega_3 = 1600\pi.
+\]
+Line spectrum:
+\[
+\begin{aligned}
+X(\pm 800\pi) &= 5e^{\pm j\pi/4}, \\
+X(\pm 1200\pi) &= \tfrac{7}{2}e^{\mp j\pi/3}, \\
+X(\pm 1600\pi) &= \tfrac{3}{2}e^{\pm j\pi}.
+\end{aligned}
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Periodicity of Multi-Sinusoid Signals}
+
+\begin{theorybox}
+A sum of sinusoids
+\[
+x(t) = \sum_i A_i \cos(\omega_i t + \varphi_i)
+\]
+is periodic if all frequencies are integer multiples of a fundamental frequency $f_0$:
+\[
+f_i = \frac{\omega_i}{2\pi} = n_i f_0, \quad n_i \in \mathbb{Z}.
+\]
+Then the fundamental period is:
+\[
+T_0 = \frac{1}{f_0}.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: a common period exists only if all frequencies share a common base.}
+
+\begin{methodbox}
+To determine periodicity and $T_0$:
+\begin{enumerate}
+  \item Convert each angular frequency: $f_i = \omega_i/(2\pi)$.
+  \item Compute $f_0 = \gcd(f_1,f_2,\dots)$ (using integer ratios given in the problem).
+  \item If $f_0 > 0$, then $x(t)$ is periodic with $T_0 = 1/f_0$.
+  \item If no finite $f_0$ exists, $x(t)$ is aperiodic.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From Exercise 1:
+\[
+f_1 = 400\ \text{Hz}, \quad f_2 = 600\ \text{Hz}, \quad f_3 = 800\ \text{Hz}.
+\]
+\[
+f_0 = \gcd(400,600,800) = 200\ \text{Hz}, \quad
+T_0 = \frac{1}{200} = 5\cdot 10^{-3}\ \text{s}.
+\]
+Adding a cosine at $500$ Hz yields frequencies $(400,500,600,800)$ with $f_0=\gcd(400,500,600,800)=100$ Hz, giving $T_0=10$ ms.
+\end{examplebox}
+
+% ============================================================
+\section{Complex Fourier Series Representation}
+
+\begin{theorybox}
+A real periodic signal with period $T_0$ admits the complex Fourier series:
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j 2\pi k f_0 t}, \qquad f_0 = \frac{1}{T_0},
+\]
+with complex coefficients:
+\[
+a_k = \frac{1}{T_0} \int_{T_0} x(t)\, e^{-j 2\pi k f_0 t}\, dt.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: $a_k$ are phasors describing each harmonic $k f_0$.}
+
+\begin{methodbox}
+To express $x(t)$ in FS form:
+\begin{enumerate}
+  \item Identify the fundamental frequency $f_0$ from the sinusoid frequencies.
+  \item Rewrite each term as $A\cos(2\pi f t + \varphi)$.
+  \item Use Euler to obtain terms $C_k e^{j2\pi k f_0 t}$ and $C_{-k} e^{-j2\pi k f_0 t}$.
+  \item Group coefficients multiplying $e^{j2\pi k f_0 t}$ to read off $a_k$.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From Exercise 4:
+\[
+x(t) = 10 + 20\cos(2\pi 100 t + \tfrac{\pi}{4}) + 10\sin(2\pi 250 t).
+\]
+Frequencies: $100$ Hz and $250$ Hz.
+\[
+f_0 = \gcd(100,250) = 50\ \text{Hz}, \quad T_0 = 0.02\ \text{s}.
+\]
+Non-zero coefficients:
+\[
+\begin{aligned}
+a_0 &= 10,\\
+a_{\pm 2} &= 10\,e^{\pm j\pi/4},\\
+a_{\pm 5} &= 5\,e^{\mp j\pi/2}.
+\end{aligned}
+\]
+All other $a_k$ are zero.
+\end{examplebox}
+
+% ============================================================
+\section{Spectral Symmetry and DC Component}
+
+\begin{theorybox}
+For a real-valued signal $x(t)$, its complex spectrum satisfies conjugate symmetry:
+\[
+X(-\omega) = X^*(\omega).
+\]
+Thus magnitude is even and phase is odd:
+\[
+|X(-\omega)| = |X(\omega)|, \quad \angle X(-\omega) = -\angle X(\omega).
+\]
+\end{theorybox}
+
+\begin{theorybox}
+The DC component is the average value of $x(t)$:
+\[
+X(0) = \int_{-\infty}^{\infty} x(t)\,dt \quad \text{(Fourier transform)}, \qquad
+a_0 = \frac{1}{T_0}\int_{T_0} x(t)\,dt \quad \text{(Fourier series)}.
+\]
+DC appears as a single line at $\omega=0$ and is not split into $\pm$ frequencies.
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: real time signals $\Rightarrow$ symmetric magnitudes; DC is a single average level.}
+
+\begin{examplebox}
+From Exercise 2, a real $x(t)$ defined by symmetric spectral lines:
+\[
+X(+50\ \text{Hz}) = 7e^{-j\pi/3},\quad X(-50\ \text{Hz})=7e^{+j\pi/3}
+\]
+gives
+\[
+x(t) = 11 + 14\cos(100\pi t - \tfrac{\pi}{3}) + 8\cos(350\pi t - \tfrac{\pi}{2}).
+\]
+The DC line at $f=0$ has amplitude $11$, not halved.
+\end{examplebox}
+
+% ============================================================
+\section{Nonlinear Spectral Generation: Powers of Sinusoids}
+
+\begin{theorybox}
+Nonlinear operations (e.g., squaring, cubing) on sinusoids generate harmonics at integer multiples of the base frequency. For a single sinusoid with angular frequency $\omega_0$:
+\[
+\sin^3(\omega_0 t) \Rightarrow \text{components at } \omega_0,\ 3\omega_0.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: nonlinearities mix and replicate frequencies.}
+
+\begin{methodbox}
+To find the spectrum of powers of a sinusoid:
+\begin{enumerate}
+  \item Write $\sin(\omega_0 t)$ using exponentials:
+  \[
+  \sin(\omega_0 t) = \frac{e^{j\omega_0 t} - e^{-j\omega_0 t}}{2j}.
+  \]
+  \item Raise to the desired power and expand using binomial identities.
+  \item Collect terms of the form $C e^{j m\omega_0 t}$ to identify harmonics at $m\omega_0$.
+  \item Optionally convert back to sines/cosines with phases.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From Exercise 3:
+\[
+x(t) = \sin^3(27\pi t).
+\]
+Using
+\[
+\sin^3\theta = \left(\frac{e^{j\theta} - e^{-j\theta}}{2j}\right)^3
+\]
+and expansion:
+\[
+x(t) = \frac{3}{4}\sin(27\pi t) - \frac{1}{4}\sin(81\pi t),
+\]
+with components at $\omega = 27\pi$ and $\omega = 81\pi$. Fundamental:
+\[
+\omega_0 = 27\pi,\quad f_0 = \frac{27}{2}\ \text{Hz},\quad T_0 = \frac{2}{27}\ \text{s}.
+\]
+\end{examplebox}
+
+% ============================================================
+\section{Single-Tone Amplitude Modulation (AM)}
+
+\begin{theorybox}
+A single-tone AM signal of the form
+\[
+x(t) = [A_c + m(t)]\cos(\omega_c t)
+\]
+with $m(t)$ containing a single sinusoid at $\omega_m$ produces spectral components at:
+\[
+\omega_c \quad (\text{carrier}), \qquad \omega_c \pm \omega_m \quad (\text{sidebands}).
+\]
+For a pure sinusoidal modulator $m(t)=M\sin(\omega_m t + \varphi)$ there are exactly two sidebands.
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: multiplication in time shifts spectra and creates sum/difference frequencies.}
+
+\begin{methodbox}
+To find the spectrum of a product $[A + B\sin(\omega_m t + \phi)]\cos(\omega_c t)$:
+\begin{enumerate}
+  \item Rewrite $\sin(\cdot)$ and $\cos(\cdot)$ with Euler exponentials.
+  \item Separate the carrier term $A\cos(\omega_c t)$.
+  \item Expand the product of exponentials to obtain exponents at $\omega_c \pm \omega_m$.
+  \item Group conjugate pairs to obtain cosines for carrier and sidebands.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From Exercise 5:
+\[
+x(t) = [12 + 7\sin(\pi t - \tfrac{\pi}{3})]\cos(13\pi t).
+\]
+Modulating frequency: $\omega_m = \pi$, carrier frequency: $\omega_c = 13\pi$.
+Result:
+\[
+x(t) = \frac{7}{2}\cos\big(12\pi t + \tfrac{5\pi}{6}\big)
++ 12\cos(13\pi t)
++ \frac{7}{2}\cos\big(14\pi t - \tfrac{5\pi}{6}\big),
+\]
+with components at $\omega_c$ and sidebands $\omega_c \pm \omega_m$.
+\end{examplebox}
+
+% ============================================================
+\section{Rectangular Pulse Train Fourier Series}
+
+\begin{theorybox}
+A periodic pulse train of period $T_0$ and pulse width $2t_c$:
+\[
+x(t) =
+\begin{cases}
+1, & |t| < t_c \ \text{(within one period)},\\
+0, & t_c < |t| \leq T_0/2,
+\end{cases}
+\quad x(t+T_0)=x(t)
+\]
+admits complex FS coefficients:
+\[
+a_k = \frac{1}{T_0}\int_{-t_c}^{t_c}e^{-j 2\pi k t / T_0}\,dt.
+\]
+\end{theorybox}
+
+\marginpar{\footnotesize Intuition: duty cycle controls DC level and spectral envelope.}
+
+\begin{methodbox}
+To compute $a_k$ for the pulse train:
+\begin{enumerate}
+  \item Use $a_k = \dfrac{1}{T_0}\int_{-t_c}^{t_c} e^{-j 2\pi k t/T_0}\,dt$.
+  \item For $k=0$, integrate directly:
+  \[
+  a_0 = \frac{1}{T_0}\int_{-t_c}^{t_c}1\,dt = \frac{2t_c}{T_0}.
+  \]
+  \item For $k\neq 0$, integrate exponentials:
+  \[
+  a_k = \frac{1}{T_0}\left[\frac{T_0}{-j 2\pi k}e^{-j 2\pi k t/T_0}\right]_{-t_c}^{t_c}.
+  \]
+  \item Simplify using $e^{-j\theta}-e^{j\theta}=-2j\sin\theta$ to obtain a sine form.
+\end{enumerate}
+\end{methodbox}
+
+\begin{examplebox}
+From Exercise 6:
+\[
+a_0 = \frac{2t_c}{T_0},
+\]
+and for $k\neq 0$:
+\[
+a_k = \frac{1}{\pi k}\sin\left(\frac{2\pi k t_c}{T_0}\right), \quad k\in\mathbb{Z}\setminus\{0\}.
+\]
+For $t_c = T_0/4$, the duty cycle is $1/2$ and the DC level is $a_0 = 1/2$.
+\end{examplebox}
+
+% ============================================================
+\section{Exam Strategy for Spectral Problems}
+
+\begin{methodbox}
+\begin{enumerate}
+  \item Identify all sinusoidal components and their frequencies (or read them from the spectrum).
+  \item Check periodicity by computing the fundamental frequency $f_0$ via greatest common divisor of the sinusoid frequencies.
+  \item For time-domain $\rightarrow$ spectrum:
+  \begin{itemize}
+    \item Rewrite using Euler.
+    \item Group terms at $\pm\omega$ to obtain line magnitudes and phases.
+  \end{itemize}
+  \item For spectrum $\rightarrow$ time-domain:
+  \begin{itemize}
+    \item Pair conjugate lines $X(\pm\omega)$.
+    \item Use $A=2|X(\omega)|$, $\varphi=\angle X(\omega)$ to form $A\cos(\omega t+\varphi)$.
+  \end{itemize}
+  \item For FS representations:
+  \begin{itemize}
+    \item Choose $f_0$ consistent with all observed frequencies.
+    \item Express each component as harmonic $k f_0$ and read off $a_k$.
+  \end{itemize}
+  \item For modulation and nonlinearities:
+  \begin{itemize}
+    \item Use exponentials to find sum/difference and harmonic frequencies.
+    \item Identify carrier, sidebands, and harmonic structure.
+  \end{itemize}
+\end{enumerate}
+\end{methodbox}
+
+\end{document}
